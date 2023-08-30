@@ -1,5 +1,5 @@
 {
-  "name": "2708-node-lib-md",
+  "name": "verify-links",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/alura-cursos/2708-node-lib-md.git"
+    "url": "git+https://github.com/JDelier/Verifica-Links"
   },
   "keywords": [],
   "author": "",
@@ -17,7 +17,7 @@
   "bugs": {
     "url": "https://github.com/alura-cursos/2708-node-lib-md/issues"
   },
-  "homepage": "https://github.com/alura-cursos/2708-node-lib-md#readme",
+  
   "dependencies": {
     "chalk": "5.0.1"
   }
