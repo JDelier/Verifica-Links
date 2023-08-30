@@ -1,18 +1,14 @@
-# Verifica-Links
-verificador de links úteis em arquivos md
+# O que aprendi com esse projeto?
 
-
-# aprendizado geral
-
-- ao iniciar, criamos um arquivo package.json com o comando npm init (ou yarn init)
+- Ao iniciar, criamos um arquivo package.json com o comando npm init (ou yarn init)
 - para instalação de libs externas: "npm install <\nome do pacote>" (ou "yarn add <\nome do pacote>")
 - Oque são npm e yarn? gerenciadores de pacote.
 
 
 ## Gerenciadores de pacote (npm = node package manager)
 
-- são repositórios de código aberto com soluções já feitas de problemas recorrentes.
-- pacote é o conjunto de código disponibilizado para execução.
+- São repositórios de código aberto com soluções já feitas de problemas recorrentes.
+- Pacote é o conjunto de código disponibilizado para execução.
 
 ### instalação global vs. local
 
@@ -27,8 +23,8 @@ Este exemplo será feito utilizando o [chalk](https://www.npmjs.com/package/chal
 
 - instalação padrão é feita por "npm install chalk" ou "npm i chalk"
 - alternativamente, caso queira especificar uma versão diferente:
-	comando: "npm install chalk@5.0.1 --save-exact"
-
+	comando: "npm install chalk@n.n.n --save-exact"
+Onde: n.n.n é o número da versão específica.
 Após rodar o comando, os arquivos do Chalk serão puxados do repositório do NPM pro terminal local.
 no IDE, a pasta "node_modules" foi baixada.
 
@@ -63,36 +59,37 @@ Após, é só ler a página da lib sendo usada, e como é feita a sua devida uti
 
 - FS: readFile
 
-`const encoding = 'utf8' `
-
 ```
-fs.readFile(path, encoding, (err,data)=> { 
- 	if(err)`
+const encoding = 'utf8' 
+
+ fs.readFile(path, encoding, (err,data)=> {
+ 	if(err)
  	{
  // lida com erro
  	} 
  	console.log(data)
- `})
- 
- ```
+ })
+```
 
 
 Acima temos a chamada do método 'readFile' presente na 'lib' 'fs', esse método necessita de 3 parâmetros, sendo o caminho do arquivo, o 'encodig' de texto ('utf-8'), e uma 'fn callback'.
 'readFile' já é preparado pra repassar o erro pra frente, e assim podemos tratar caso ele ocorra.
-
-`function trataErro(err)
+```
+function trataErro(err)
 {
 	throw new Error('algo inesperado aconteceu')
-}`
+	}
 
 a função ficaria assim:
-`
-`fs.readFile(path,encoding, (err, data) => {
-	if(err){
+
+fs.readFile(path,encoding, (err, data) => {
+	if(err) {
 		trataErro(err)
 	}
 	console.log(data)
 }
+```
+`
 
 
 ## Código síncrono vs. Código assíncrono.
@@ -127,3 +124,30 @@ Uma vez que a promessa esta em settled seu resultado não se altera mais.
 
 - é uma lista dos argumentos passados no terminal;
  no node use `process.argv`
+``` 
+const path = process.argv;
+
+```
+Ao executarmos no terminal o seguinte comando : "node src/nome-arquivo.js texto-qualquer"
+
+O valor salvo na variável path é um array de valores:
+[
+  '/home/user/.asdf/installs/nodejs/20.2.0/bin/node',
+  '/home/user/Projects/NodeJS/NProjects/Verify-Links_MD/src/cli.js',
+  'texto-qualquer'
+  
+]
+
+Índice 0 : remete ao 'node', e retorna o caminho onde fica os executáveis do node.
+Índice 1 : remete ao 'src/nome-arquivo' e retorna o caminho absoluto do diretório/arquivo atual
+Índice 3: remete ao 'texto-qualquer' retorna a qualquer argumento passado naquela posição.
+
+Com isso em mente, podemos passar o caminho e o nome do arquivo que vamos utilizar como argumentos.
+Alternativamente eu implementei uma função que captura o número de argumentos passados, e caso não seja passado argumentos adicionais além do 'node src/nome-arquivo', ele joga um erro e informa o método de uso do script.
+
+### Caminho absoluto vs. caminho relativo
+
+- Caminho absoluto, quando a localização de pasta ou arquivo é especificada a partir do diretório-raiz do sistema.
+- Relativo, quando é a localização de pasta ou arquivo é feita em relação ao pwd, present work directory.
+
+
