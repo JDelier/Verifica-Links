@@ -6,29 +6,29 @@ const log = console.log;
 async function takeFile(path) {
   try {
     const enconding = "utf-8";
-    const texto = await fs.promises.readFile(path, enconding);
-    return extraiLink(texto);
-  } catch (erro) {
-    trataError(erro);
+    const content = await fs.promises.readFile(path, enconding);
+    return extraiLink(content);
+  } catch (err) {
+    trataError(err);
   } finally {
     log(chalk.yellow("operação concluída"));
   }
 }
 
-function trataError(erro) {
-  throw new Error(chalk.red(erro.errno, "no such file found on this dir"));
+function trataError(err) {
+  throw new Error(chalk.red(err.errno, "no such file found on this dir"));
 }
 
-function extraiLink(texto) {
+function extraiLink(text) {
   const regex = /\[([^\[\]]*?)\]\((https?:\/\/[^\s?#.].[^\s]*)\)/gm;
 
-  const capturas = [...texto.matchAll(regex)];
+  const matchs = [...text.matchAll(regex)];
 
-  const result = capturas.map((captura) => ({ [captura[1]]: captura[2] }));
+  const result = matchs.map((match) => ({ [match[1]]: match[2] }));
 
   return result.length !== 0 ? result : "Sem match de links no arquivo passado";
 }
 
 export default takeFile;
 
-// [gatinho salsicha](http://gatinhosalsicha.com.br/)
+

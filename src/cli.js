@@ -2,46 +2,22 @@ import chalk from "chalk";
 import takeFile from "./index.js";
 import fs from "fs";
 import verifiedList from "./http-validacao.js";
-
+import yargs from 'yargs'
+import { hideBin } from 'yargs/helpers'
+ 
 const log = console.log;
-
-const path = process.argv;
-
-async function imprimeLista(valida, resultado, identifier = "") {
-  if (valida) {
-    log(
-      chalk.yellow("verified list"),
-      chalk.black.bgGreen(identifier),
-      await verifiedList(resultado)
-    );
-  } else {
-    log(
-      chalk.yellow("verified list"),
-      chalk.black.bgGreen(identifier),
-      resultado
-    );
-  }
-
-  return resultado;
-}
-
-function validaAberturaArquivo(argCount) {
-  if (argCount < 3) {
-    throw new Error(chalk.red(`Usage: node file.js path_target_file.md)`));
-  }
-  return;
-}
-
-async function processText(args) {
-  const path = args[2];
-  const flag = args[3] === "--valida";
+const argv = yargs(hideBin(process.argv)).argv
+// processa o texto dentro do arquivo ou arquivos
+async function processText() {
+  const path = argv["_"][0];
+  const flag = argv.v
 
   try {
     fs.lstatSync(path);
-  } catch (error) {
-    if (error.code === "ENOENT") {
+  } catch (err) {
+    if (err.code === "ENOENT") {
       log(
-        `Código de erro: [${chalk.white(error.code)}] ${chalk.red(
+        `Código de erro: [${chalk.white(err.code)}] ${chalk.red(
           "Arquivo ou diretório não existe"
         )}`
       );
@@ -54,24 +30,50 @@ async function processText(args) {
 
   if (isFile) {
     const resultOfReadFile = await takeFile(path);
-    imprimeLista(flag, resultOfReadFile);
+    writeList(flag, resultOfReadFile);
   } else if (isDir) {
     // isDir é true quando o caminho passado é de um diretorio;
     // readdir le o diretorio e devolve um array com o nome dos arquivos
-
     const resultOfReadDir = await fs.promises.readdir(path);
-
     // cada indice dentro do array de resultado da fn readdir é um nome de arquivo
     // alem disso, forEach é uma função, entao precisa da palavra chave async, pq takeFile(fn callback) é fn assincrona
     resultOfReadDir.forEach(async (fileName) => {
-      const list = await takeFile(`${path}${fileName}`);
+      const content = await takeFile(`${path}${fileName}`);
 
-      imprimeLista(flag, list, fileName);
-      return list;
+      writeList(flag, content, fileName);
+      return content;
     });
   }
 }
 
-validaAberturaArquivo(path.length);
+async function writeList(flag, result, identifier = "") {
+  if (flag) {
+    log(
+      chalk.yellow("verified list"),
+      chalk.black.bgGreen(identifier),
+      await verifiedList(result)
+    );
+  } else {
+    log(
+      chalk.yellow("list"),
+      chalk.black.bgGreen(identifier),
+      result
+    );
+  }
 
-processText(path);
+  return result;
+}
+
+function validPath(argCount) {
+  if (argCount < 3) {
+    throw new Error(chalk.red(`Usage: node file.js path_target_file.md)`));
+  }
+  return;
+}
+
+
+
+// exec
+
+
+processText();
